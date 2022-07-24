@@ -1,7 +1,8 @@
 use v6;
-unit module JSON::Unmarshal;
 use JSON::Name;
 use JSON::Fast;
+
+unit module JSON::Unmarshal;
 
 =begin pod
 =NAME JSON::Unmarshal
