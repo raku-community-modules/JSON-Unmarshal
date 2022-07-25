@@ -2,6 +2,10 @@ Revision history for JSON-Unmarshal
 
 {{$NEXT}}
 
+0.11  2022-07-25T10:26:41+02:00
+    - Fix trait issue, Siavash++
+    - Add some tags
+
 0.10  2022-07-10T20:49:14-04:00
     - Fix a problem with nominalizables when their nominal is a non-default class
 

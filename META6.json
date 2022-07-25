@@ -22,8 +22,10 @@
   ],
   "source-url": "https://github.com/raku-community-modules/JSON-Unmarshal.git",
   "tags": [
+    "JSON",
+    "UNMARSHALL"
   ],
   "test-depends": [
   ],
-  "version": "0.10"
+  "version": "0.11"
 }
