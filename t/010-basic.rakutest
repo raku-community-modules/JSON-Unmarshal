@@ -89,5 +89,28 @@ is $p.hash<int>, 1;
 is $p.hash<bool>, True;
 is $p.hash<rat>, 42.3;
 
+subtest "unmarshall named arguments", {
+    plan 2;
+
+    {
+        my $warn-msg = "";
+        CONTROL {
+            when CX::Warn {
+                $warn-msg = .message;
+                .resume
+            }
+        }
+        unmarshal '{}', HashTest, :warn, :foo, :bar;
+
+        like 
+            $warn-msg, 
+            /"Unsupported arguments: 'bar', 'foo'"/, 
+            "unsupported named arguments result in a warning with :warn";
+    }
+
+    dies-ok { unmarshal '{}', HashTest, :die, :foo, :bar }, 
+            "it dies with unsupported named arguments and :die (or :throw)";
+}
+
 done-testing;
 # vim: expandtab shiftwidth=4 ft=raku
