@@ -195,7 +195,7 @@ multi _unmarshal(Any:D $json, Bool, Bool :$opt-in) {
    return Bool($json);
 }
 
-multi _unmarshal(%json, Any $obj is raw, Bool :$opt-in) {
+multi _unmarshal(%json, Mu $obj is raw, Bool :$opt-in) {
     my %args;
     my \type = $obj.HOW.archetypes.nominalizable ?? $obj.^nominalize !! $obj.WHAT;
     my %local-attrs =  type.^attributes(:local).map({ $_.name => $_.package });
