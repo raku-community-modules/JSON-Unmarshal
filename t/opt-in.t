@@ -5,6 +5,8 @@ use JSON::Unmarshal;
 use JSON::OptIn;
 use JSON::Name;
 
+plan 3;
+
 class OptInClass {
 
     has Str $.not_opted_in = "original";

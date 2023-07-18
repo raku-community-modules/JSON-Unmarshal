@@ -1,6 +1,8 @@
 use Test;
 use JSON::Unmarshal;
 
+plan 25;
+
 class Dog {
     has Str $.name;
     has Str $.race;

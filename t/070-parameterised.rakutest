@@ -3,6 +3,8 @@
 use Test;
 use JSON::Unmarshal;
 
+plan 2;
+
 class C {
 	has Str %.bla{subset :: of Str where any("ble", "blob")}
 }; 

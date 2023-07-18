@@ -8,6 +8,8 @@ use Test;
 use JSON::Unmarshal;
 use JSON::Name;
 
+plan 2;
+
 class TestClass {
     has $.nice-name is rw is json-name('666.evil.name');
 }
