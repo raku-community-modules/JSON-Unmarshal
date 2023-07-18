@@ -195,7 +195,7 @@ multi _unmarshal(Any:D $json, Bool, Bool :$opt-in) {
    return Bool($json);
 }
 
-multi _unmarshal(Any:D $json, Any $obj is raw, Bool :$opt-in) {
+multi _unmarshal(%json, Any $obj is raw, Bool :$opt-in) {
     my %args;
     my \type = $obj.HOW.archetypes.nominalizable ?? $obj.^nominalize !! $obj.WHAT;
     my %local-attrs =  type.^attributes(:local).map({ $_.name => $_.package });
@@ -214,20 +214,20 @@ multi _unmarshal(Any:D $json, Any $obj is raw, Bool :$opt-in) {
         else {
             $attr-name;
         }
-        if $json{$json-name}:exists {
+        if %json{$json-name}:exists {
             my Mu $attr-type := $attr.type;
             %args{$attr-name} := do if $attr ~~ CustomUnmarshaller {
-                $attr.unmarshal($json{$json-name}, $attr-type)
+                $attr.unmarshal(%json{$json-name}, $attr-type)
             }
             elsif $attr-type.HOW.archetypes.nominalizable
                 && $attr-type.HOW.archetypes.coercive
-                && $json{$json-name} ~~ $attr-type
+                && %json{$json-name} ~~ $attr-type
             {
                 # No need to unmarshal, coercion will take care of it
-                $json{$json-name}
+                %json{$json-name}
             }
             else {
-                _unmarshal($json{$json-name}, $attr-type, :$opt-in)
+                _unmarshal(%json{$json-name}, $attr-type, :$opt-in)
             }
         }
     }
@@ -243,9 +243,9 @@ multi _unmarshal($json, @x, Bool :$opt-in) {
     return @ret;
 }
 
-multi _unmarshal($json, %x, Bool :$opt-in) {
+multi _unmarshal(%json, %x, Bool :$opt-in) {
    my %ret := Hash[%x.of].new;
-   for $json.kv -> $key, $value {
+   for %json.kv -> $key, $value {
       my $type = %x.of =:= Any ?? $value.WHAT !! %x.of;
       %ret{$key} = _unmarshal($value, $type, :$opt-in);
    }
