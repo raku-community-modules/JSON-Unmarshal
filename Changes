@@ -1,9 +1,11 @@
 Revision history for JSON-Unmarshal
 
 {{$NEXT}}
-- Extend safety measure by introducing `:warn` and `:die`/`:throw` named arguments
-- Allow non-`Any` classes to be deserialized
-- Added some missing pieces to the documentation
+
+0.12  2023-07-19T17:26:55-04:00
+    - Extend safety measure by introducing `:warn` and `:die`/`:throw` named arguments
+    - Allow non-`Any` classes to be deserialized
+    - Added some missing pieces to the documentation
 
 0.11  2022-07-25T10:26:41+02:00
     - Fix trait issue, Siavash++
