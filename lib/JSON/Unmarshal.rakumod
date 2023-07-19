@@ -322,7 +322,7 @@ multi unmarshal(Str:D $json, Associative $obj, *%c) {
     }
 }
 
-multi unmarshal(Str:D $json, $obj, *%c) {
+multi unmarshal(Str:D $json, Mu $obj, *%c) {
     _unmarshall-context $obj, %c, {
         _unmarshal(from-json($json), $obj.WHAT)
     }
