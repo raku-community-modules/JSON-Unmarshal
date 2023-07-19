@@ -5,6 +5,8 @@ use v6.*;
 use Test;
 use JSON::Unmarshal;
 
+plan 4;
+
 my Str $json = '{ "attr" : null }';
 
 my @tests = %( "class" => class  { has Int $.attr; }, description => "Int attribute" ),

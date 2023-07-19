@@ -3,6 +3,8 @@ use v6;
 use Test;
 use JSON::Unmarshal;
 
+plan 16;
+
 class AnyAttributeClass {
     has $.any-attr;
 }
