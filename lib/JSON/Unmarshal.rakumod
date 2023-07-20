@@ -330,7 +330,7 @@ my sub _unmarshall-context(\obj, % (Bool :$opt-in, Bool :$warn, Bool :die(:$thro
     }
     my $*JSON-UNMARSHAL-TYPE := obj.WHAT;
     my $*JSON-UNMARSHALL-PARAMS :=
-        UnmarshallParams.new: :$opt-in, error-mode => (($throw && EM_THROW) // ($warn && EM_WARN) // EM_IGNORE);
+        UnmarshallParams.new: :$opt-in, error-mode => ($throw ?? EM_THROW !! ($warn ?? EM_WARN !! EM_IGNORE));
     code()
 }
 
