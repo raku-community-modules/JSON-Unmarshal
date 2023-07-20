@@ -140,9 +140,10 @@ our class X::CannotUnmarshal is Exception {
 
 our class X::UnusedKeys is Exception {
     has Set:D $.unused-keys is required;
+    has Mu:U $.type is required;
     method message {
         my $sfx = $!unused-keys.elems > 1 ?? "s" !! "";
-        "No attribute$sfx found for JSON key$sfx " ~ $!unused-keys.keys.sort.map("'" ~ * ~ "'").join(", ")
+        "No attribute$sfx found in '" ~ $!type.^name ~ "' for JSON key$sfx " ~ $!unused-keys.keys.sort.map("'" ~ * ~ "'").join(", ")
     }
 }
 
@@ -289,7 +290,7 @@ multi _unmarshal(%json, Mu $obj is raw) {
     if ((my $err-mode = $params.error-mode) != EM_IGNORE)
         && (my $unused-keys = (%json.keys.Set (-) $used-json-keys))
     {
-        my $ex = X::UnusedKeys.new: :$unused-keys;
+        my $ex = X::UnusedKeys.new: :$unused-keys, :type(type);
         if $err-mode == EM_WARN {
            warn($ex.message)
         }
