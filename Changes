@@ -1,6 +1,8 @@
 Revision history for JSON-Unmarshal
 
 {{$NEXT}}
+
+0.13  2023-07-20T22:09:02-04:00
     - When reporting unsued JSON keys report the target type too
     - Fix a bug with incorrect setting of warn/throw mode
 
