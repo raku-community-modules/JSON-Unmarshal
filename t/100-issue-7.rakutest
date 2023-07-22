@@ -1,0 +1,38 @@
+use Test;
+
+use JSON::Unmarshal;
+
+plan 2;
+
+subtest {
+    my class TestClass {
+        has $.attribute where Positional|Associative;
+    }
+
+    my $obj;
+
+    my $with-object-attr = '{ "attribute": { "foo" : "bar" } }';
+
+    lives-ok { $obj = unmarshal($with-object-attr, TestClass) }, "with object attribute";
+
+    is-deeply $obj.attribute, { foo => 'bar' }, "attribute got set correctly";
+
+    my $with-list-attr = '{ "attribute": [ "foo", "bar" ] }';
+
+    lives-ok { $obj = unmarshal($with-list-attr, TestClass) }, "with list attribute";
+
+    is-deeply $obj.attribute, [ "foo", "bar" ], "attribute got set correctly";
+
+}, 'where subset with Junction type';
+
+subtest {
+    my class TestClass {
+        has Str @.attribute;
+    }
+
+    my $with-object-attr = '{ "attribute": { "foo" : "bar" } }';
+
+
+    throws-like { unmarshal($with-object-attr, TestClass) }, X::CannotUnmarshal, "object passed for positional attribute";
+
+}, 'positional vs associative mismatch';

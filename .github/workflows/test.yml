@@ -30,3 +30,7 @@ jobs:
         run: zef install --/test App::Prove6
       - name: Run Tests
         run: prove6 -I. t
+      - name: Install
+        run: zef install --/test .
+      - name: Test and install META6
+        run: zef install META6
