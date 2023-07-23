@@ -252,7 +252,7 @@ multi _unmarshal(%json, @x) {
     panic(%json, Positional, "type mismatch");
 }
 
-multi _unmarshal(%json, Mu $obj is raw where { %json !~~ $obj }) {
+multi _unmarshal(%json, Mu $obj is raw where { Associative !~~ $obj }) {
     my %args;
     my $params = $*JSON-UNMARSHALL-PARAMS;
     my SetHash $used-json-keys .= new;
