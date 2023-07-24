@@ -252,7 +252,7 @@ multi _unmarshal(%json, @x) {
     panic(%json, Positional, "type mismatch");
 }
 
-multi _unmarshal(%json, Mu $obj is raw where { Associative !~~ $obj }) {
+multi _unmarshal(%json, Mu $obj is raw where { ? .^attributes.first(*.has_accessor) }) {
     my %args;
     my $params = $*JSON-UNMARSHALL-PARAMS;
     my SetHash $used-json-keys .= new;
@@ -275,19 +275,19 @@ multi _unmarshal(%json, Mu $obj is raw where { Associative !~~ $obj }) {
         }
         if %json{$json-name}:exists {
             my Mu $attr-type := $attr.type;
+            my $is-nominalizable = $attr-type.HOW.archetypes.nominalizable;
             $used-json-keys.set($json-name);
+
             %args{$attr-name} := do if $attr ~~ CustomUnmarshaller {
                 $attr.unmarshal(%json{$json-name}, $attr-type)
             }
-            elsif $attr-type.HOW.archetypes.nominalizable
-                && $attr-type.HOW.archetypes.coercive
-                && %json{$json-name} ~~ $attr-type
+            elsif $is-nominalizable && $attr-type.HOW.archetypes.coercive && %json{$json-name} ~~ $attr-type
             {
                 # No need to unmarshal, coercion will take care of it
                 %json{$json-name}
             }
             else {
-                _unmarshal(%json{$json-name}, $attr-type)
+                _unmarshal(%json{$json-name}, $is-nominalizable ?? $attr-type.^nominalize !! $attr-type)
             }
         }
     }
