@@ -248,7 +248,9 @@ multi _unmarshal(Any:D $json, Bool) {
    return Bool($json);
 }
 
-multi _unmarshal(%json, @x) {
+subset PosNoAccessor of Positional where { ! .^attributes.first(*.has_accessor) };
+
+multi _unmarshal(%json, PosNoAccessor $obj ) {
     panic(%json, Positional, "type mismatch");
 }
 
@@ -341,7 +343,7 @@ my sub _unmarshall-context(\obj, % (Bool :$opt-in, Bool :$warn, Bool :die(:$thro
 
 proto unmarshal(Any:D, |) is export {*}
 
-multi unmarshal(Str:D $json, Positional $obj, *%c) {
+multi unmarshal(Str:D $json, PosNoAccessor $obj, *%c) {
     _unmarshall-context $obj, %c, {
         my Any \data = from-json($json);
         if data ~~ Positional {

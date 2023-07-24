@@ -2,7 +2,7 @@ use Test;
 
 use JSON::Unmarshal;
 
-plan 2;
+plan 4;
 
 subtest {
     my class TestClass {
@@ -36,3 +36,37 @@ subtest {
     throws-like { unmarshal($with-object-attr, TestClass) }, X::CannotUnmarshal, "object passed for positional attribute";
 
 }, 'positional vs associative mismatch';
+
+subtest {
+    my class TestClass does Positional {
+        has Str $.string;
+    }
+
+    my $string-attribute = '{ "string" : "test value" }';
+
+    my $obj;
+
+    lives-ok { $obj = unmarshal($string-attribute, TestClass) }, "unmarshal";
+
+    is $obj.string, 'test value', "got the attribute back";
+
+}, 'class that does positional with pairwise constructor at top level';
+
+subtest {
+    my class TestClassPos does Positional {
+        has Str $.string;
+    }
+
+    my class TestClass {
+        has TestClassPos $.pos;
+    }
+
+    my $string-attribute = '{"pos" : { "string" : "test value" }}';
+
+    my $obj;
+
+    lives-ok { $obj = unmarshal($string-attribute, TestClass) }, "unmarshal";
+
+    is $obj.pos.string, 'test value', "got the attribute back";
+
+}, 'class that does positional with pairwise constructor as attribute';
