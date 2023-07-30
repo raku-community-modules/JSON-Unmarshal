@@ -1,6 +1,8 @@
 Revision history for JSON-Unmarshal
 
 {{$NEXT}}
+
+0.15  2023-07-30T16:39:11-04:00
     - Nominalize type objects first if they're nominalizable
     - Clarify the rule defining deserializable type objects: a nominal with at least one public attribute
     - Consider `is build`-marked attributes as public
