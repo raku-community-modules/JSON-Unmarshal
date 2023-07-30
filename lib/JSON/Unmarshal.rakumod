@@ -203,6 +203,10 @@ multi sub panic($json, Mu \type, Str $why?) {
         :target($*JSON-UNMARSHAL-TYPE) ).throw
 }
 
+my sub maybe-nominalize(Mu \obj) is pure is raw {
+    obj.HOW.archetypes.nominalizable ?? obj.^nominalize !! obj
+}
+
 multi _unmarshal(Any:U, Mu $type) {
     $type;
 }
@@ -248,13 +252,22 @@ multi _unmarshal(Any:D $json, Bool) {
    return Bool($json);
 }
 
-subset PosNoAccessor of Positional where { ! .^attributes.first(*.has_accessor) };
+subset PosNoAccessor of Positional where { ! maybe-nominalize($_).^attributes.first({ .has_accessor || .is_built }) };
 
 multi _unmarshal(%json, PosNoAccessor $obj ) {
     panic(%json, Positional, "type mismatch");
 }
 
-multi _unmarshal(%json, Mu $obj is raw where { ? .^attributes.first(*.has_accessor) }) {
+# A class-like type is the one we can instantiate and it has at least one public or `is build`-marked attribute.
+subset ClassLike of Mu
+    where -> Mu \type {
+        .HOW.archetypes.nominal
+        && .HOW.^can('attributes')
+        && .^attributes.first({ $_ ~~ Attribute && (.has_accessor || .is_built) })
+            given maybe-nominalize(type)
+    };
+
+multi _unmarshal(%json, ClassLike $obj is raw) {
     my %args;
     my $params = $*JSON-UNMARSHALL-PARAMS;
     my SetHash $used-json-keys .= new;

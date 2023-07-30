@@ -1,6 +1,9 @@
 Revision history for JSON-Unmarshal
 
 {{$NEXT}}
+    - Nominalize type objects first if they're nominalizable
+    - Clarify the rule defining deserializable type objects: a nominal with at least one public attribute
+    - Consider `is build`-marked attributes as public
 
 0.14  2023-07-25T18:54:32+02:00
     - Tighten up the _unmarshal(%, Mu) candidate to not match Positional|Associative target
