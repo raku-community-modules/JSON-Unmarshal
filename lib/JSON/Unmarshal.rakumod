@@ -148,7 +148,7 @@ our class X::UnusedKeys is Exception {
 }
 
 enum ErrorMode <EM_IGNORE EM_WARN EM_THROW>;
-my class UnmarshallParams {
+my class UnmarshalParams {
     has Bool $.opt-in;
     has ErrorMode $.error-mode;
 }
@@ -269,7 +269,7 @@ subset ClassLike of Mu
 
 multi _unmarshal(%json, ClassLike $obj is raw) {
     my %args;
-    my $params = $*JSON-UNMARSHALL-PARAMS;
+    my $params = $*JSON-UNMARSHAL-PARAMS;
     my SetHash $used-json-keys .= new;
     my \type = $obj.HOW.archetypes.nominalizable ?? $obj.^nominalize !! $obj.WHAT;
     my %local-attrs =  type.^attributes(:local).map({ $_.name => $_.package });
@@ -349,8 +349,8 @@ my sub _unmarshall-context(\obj, % (Bool :$opt-in, Bool :$warn, Bool :die(:$thro
         }
     }
     my $*JSON-UNMARSHAL-TYPE := obj.WHAT;
-    my $*JSON-UNMARSHALL-PARAMS :=
-        UnmarshallParams.new: :$opt-in, error-mode => ($throw ?? EM_THROW !! ($warn ?? EM_WARN !! EM_IGNORE));
+    my $*JSON-UNMARSHAL-PARAMS :=
+        UnmarshalParams.new: :$opt-in, error-mode => ($throw ?? EM_THROW !! ($warn ?? EM_WARN !! EM_IGNORE));
     code()
 }
 
