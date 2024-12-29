@@ -1,130 +1,8 @@
-use v6;
 use JSON::Name:ver<0.0.6+>;
 use JSON::OptIn;
 use JSON::Fast;
 
 unit module JSON::Unmarshal;
-
-=begin pod
-=NAME JSON::Unmarshal
-
-Make JSON from an Object (the opposite of JSON::Marshal)
-
-=SYNOPSIS
-
-    use JSON::Unmarshal;
-
-    class SomeClass {
-        has Str $.string;
-        has Int $.int;
-    }
-
-    my $json = '{ "string" : "string", "int" : 42 }';
-
-    my SomeClass $object = unmarshal($json, SomeClass);
-
-    say $object.string; # -> "string"
-    say $object.int;    # -> 42
-
-
-=DESCRIPTION
-
-This provides a single exported subroutine to create an object from a
-JSON representation of an object.
-
-It only initialises the "public" attributes (that is those with accessors
-created by declaring them with the '.' twigil. Attributes without acccessors
-are ignored.
-
-=head2 C<unmarshal> Routine
-
-C<unmarshal> has the following signatures:
-
-=item C<unmarshal(Str:D $json, Positional $obj, *%)>
-=item C<unmarshal(Str:D $json, Associative $obj, *%)>
-=item C<unmarshal(Str:D $json, Mu $obj, *%)>
-=item C<unmarshal(%json, $obj, *%)>
-=item C<unmarshal(@json, $obj, *%)>
-
-The signatures with associative and positional JSON objects are to be used for pre-parsed JSON data obtained from a
-different source. For example, this may happen when a framework deserializes it for you.
-
-The following named arguments are supported:
-
-=begin item
-B<C<Bool :$opt-in>>
-
-When falsy then all attributes of a class are deserialized. When I<True> then only those marked with C<is json> trait
-provided by C<JSON::OptIn> module are taken into account.
-=end item
-
-=begin item
-B<C<Bool :$warn>>
-
-If set to I<True> then the module will warn about some non-critical problems like unsupported named arguments or keys in
-JSON structure for which there no match attributes were found.
-=end item
-
-=begin item
-B<C<Bool :$die>> or B<C<Bool :$throw>>
-
-This is two aliases of the same attribute with meaning, similar to C<:warn>, but where otherwise a waning would be
-issued the module will throw an exception.
-=end item
-
-=head2 Manual Unmarshalling
-
-It is also possible to use C<is unmarshalled-by> trait to control how the value is unmarshalled:
-
-    use JSON::Unmarshal
-
-    class SomeClass {
-        has Version $.version is unmarshalled-by(-> $v { Version.new($v) });
-    }
-
-    my $json = '{ "version" : "0.0.1" }';
-
-    my SomeClass $object = unmarshal($json, SomeClass);
-
-    say $object.version; # -> "v0.0.1"
-
-
-The trait has two variants, one which takes a Routine as above, the other
-a Str representing the name of a method that will be called on the type
-object of the attribute type (such as "new",) both are expected to take
-the value from the JSON as a single argument.
-
-=INSTALLATION
-
-Assuming you have a working Raku installation you should be able to
-install this with *zef* :
-
-=begin code
-# From the source directory
-
-zef install .
-
-# Remote installation
-
-zef install JSON::Unmarshal
-=end code
-
-=SUPPORT
-
-Suggestions/patches are welcomed via github at
-
-L<https://github.com/raku-community-modules/JSON-Unmarshal>
-
-=head1 COPYRIGHT AND LICENSE
-
-Copyright 2015-2017 Tadeusz Sośnierz
-Copyright 2022 Raku Community
-
-This library is free software; you can redistribute it and/or modify it under the Artistic License 2.0.
-
-Please see the LICENCE file in the distribution
-
-=end pod
 
 our class X::CannotUnmarshal is Exception {
     has Attribute:D $.attribute is required;
@@ -192,7 +70,7 @@ multi sub panic($json, Mu \type, X::CannotUnmarshal:D $ex) {
     $ex.rethrow
 }
 multi sub panic($json, Mu \type, Exception:D $ex) {
-    samewith($json, type, $ex.message)
+    panic($json, type, $ex.message)
 }
 multi sub panic($json, Mu \type, Str $why?) {
     X::CannotUnmarshal.new(
@@ -224,7 +102,7 @@ multi _unmarshal(Any:D $json, Rat) {
          panic($json, Rat, $_);
       }
    }
-   return Rat($json);
+   Rat($json)
 }
 
 multi _unmarshal(Any:D $json, Numeric) {
@@ -249,7 +127,7 @@ multi _unmarshal(Any:D $json, Bool) {
          panic($json, Bool, $_);
       }
    }
-   return Bool($json);
+   Bool($json);
 }
 
 subset PosNoAccessor of Positional where { ! maybe-nominalize($_).^attributes.first({ .has_accessor || .is_built }) };
@@ -326,7 +204,7 @@ multi _unmarshal($json, @x) {
        my $type = @x.of =:= Any ?? $value.WHAT !! @x.of;
        @ret.append(_unmarshal($value, $type));
     }
-    return @ret;
+    @ret
 }
 
 multi _unmarshal(%json, %x) {
@@ -335,11 +213,11 @@ multi _unmarshal(%json, %x) {
       my $type = %x.of =:= Any ?? $value.WHAT !! %x.of;
       %ret{$key} = _unmarshal($value, $type);
    }
-   return %ret;
+   %ret
 }
 
 multi _unmarshal(Any:D $json, Mu) {
-    return $json
+    $json
 }
 
 my sub _unmarshall-context(\obj, % (Bool :$opt-in, Bool :$warn, Bool :die(:$throw), *%extra), &code) is raw {
@@ -397,4 +275,5 @@ multi unmarshal(@json, $obj, *%c) {
         _unmarshal(@json, $obj.WHAT)
     }
 }
+
 # vim: expandtab shiftwidth=4 ft=raku
