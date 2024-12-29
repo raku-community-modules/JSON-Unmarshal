@@ -1,6 +1,8 @@
 Revision history for JSON-Unmarshal
 
 {{$NEXT}}
+
+0.16  2024-12-29T19:11:31+01:00
     - Add CI badge for each OS
     - Modernized file extensions (where they weren't yet)
     - Modernized pod a bit
