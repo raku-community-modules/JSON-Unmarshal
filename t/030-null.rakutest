@@ -1,8 +1,5 @@
-#!/usr/bin/env raku
-
-use v6.*;
-
 use Test;
+
 use JSON::Unmarshal;
 
 plan 4;
@@ -19,5 +16,4 @@ for @tests -> $test {
     lives-ok { $obj = unmarshal($json, $test<class> ) }, $test<description>;
 }
 
-done-testing;
 # vim: expandtab shiftwidth=4 ft=raku

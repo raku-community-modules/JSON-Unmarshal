@@ -1,4 +1,5 @@
 use Test;
+
 use JSON::Unmarshal;
 
 plan 25;
@@ -114,5 +115,4 @@ subtest "unmarshall named arguments", {
             "it dies with unsupported named arguments and :die (or :throw)";
 }
 
-done-testing;
 # vim: expandtab shiftwidth=4 ft=raku

@@ -1,4 +1,5 @@
 use Test;
+
 use JSON::Unmarshal;
 
 plan 2;
@@ -27,8 +28,11 @@ my $json = '{"count": 42, "check": true, "description": "about something", "name
         flunk $msg;
     }
 }
+
 throws-like 
     { my Foo $foo = unmarshal $json, Foo, :throw; },
     X::UnusedKeys,
     :unused-keys(<description name>.Set),
     "an exception is thrown for unsued JSON keys with :throw (or :die)";
+
+# vim: expandtab shiftwidth=4 ft=raku

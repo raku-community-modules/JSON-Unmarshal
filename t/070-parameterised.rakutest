@@ -1,13 +1,12 @@
-#!raku
-
 use Test;
+
 use JSON::Unmarshal;
 
 plan 2;
 
 class C {
 	has Str %.bla{subset :: of Str where any("ble", "blob")}
-}; 
+} 
 
 my $res;
 
@@ -16,7 +15,5 @@ lives-ok {
 }, "unmarshal class with hash with subset constrained values";
 
 is $res.bla<ble> , 'bli', "and the result is what is expected";
-
-done-testing;
 
 # vim: expandtab shiftwidth=4 ft=raku

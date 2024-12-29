@@ -4,7 +4,7 @@ use JSON::Unmarshal;
 
 plan 4;
 
-subtest {
+subtest 'where subset with Junction type' => {
     my class TestClass {
         has $.attribute where Positional|Associative;
     }
@@ -23,9 +23,9 @@ subtest {
 
     is-deeply $obj.attribute, [ "foo", "bar" ], "attribute got set correctly";
 
-}, 'where subset with Junction type';
+}
 
-subtest {
+subtest 'positional vs associative mismatch' => {
     my class TestClass {
         has Str @.attribute;
     }
@@ -35,9 +35,9 @@ subtest {
 
     throws-like { unmarshal($with-object-attr, TestClass) }, X::CannotUnmarshal, "object passed for positional attribute";
 
-}, 'positional vs associative mismatch';
+}
 
-subtest {
+subtest 'class that does positional with pairwise constructor at top level' => {
     my class TestClass does Positional {
         has Str $.string;
     }
@@ -50,9 +50,9 @@ subtest {
 
     is $obj.string, 'test value', "got the attribute back";
 
-}, 'class that does positional with pairwise constructor at top level';
+}
 
-subtest {
+subtest 'class that does positional with pairwise constructor as attribute' => {
     my class TestClassPos does Positional {
         has Str $.string;
     }
@@ -68,5 +68,6 @@ subtest {
     lives-ok { $obj = unmarshal($string-attribute, TestClass) }, "unmarshal";
 
     is $obj.pos.string, 'test value', "got the attribute back";
+}
 
-}, 'class that does positional with pairwise constructor as attribute';
+# vim: expandtab shiftwidth=4 ft=raku
