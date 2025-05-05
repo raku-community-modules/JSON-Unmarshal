@@ -74,7 +74,7 @@ subtest "unmarshalled-by on a positional attribute" => {
         $obj = unmarshal $json, CustomArrayAttribute;
     }, "unmarshal with custom marshaller on positional attribute";
 
-    ok $obj.inners.are(CustomArrayAttribute::Inner), "and all the objects in the array are correct";
+    ok all($obj.inners) ~~ CustomArrayAttribute::Inner, "and all the objects in the array are correct";
     is-deeply $obj.inners.map( *.name), <one two three>, "and they have their names set correctly";
 }
 
