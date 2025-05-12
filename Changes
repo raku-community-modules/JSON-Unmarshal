@@ -2,6 +2,9 @@ Revision history for JSON-Unmarshal
 
 {{$NEXT}}
 
+0.18  2025-05-12T12:33:56+02:00
+    - Unbreak test on Windows, samgwise++
+
 0.17  2025-05-06T01:04:42+02:00
     - Unbreak App::Mi6 on earlier Rakudos by remove .are from test, 0rir++
     - Update copyright year
