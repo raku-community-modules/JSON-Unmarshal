@@ -74,7 +74,16 @@ subtest "unmarshalled-by on a positional attribute" => {
         $obj = unmarshal $json, CustomArrayAttribute;
     }, "unmarshal with custom marshaller on positional attribute";
 
-    ok all($obj.inners) ~~ CustomArrayAttribute::Inner, "and all the objects in the array are correct";
+    # The code below is an expansion of the logic: all($obj.inners) ~~ CustomArrayAttribute::Inner
+    # It has been written out in full for compatibility across versions and OSes (looking at you windows).
+    {
+        my @checked = do for $obj.inners.kv -> $i, $inner {
+            ok $inner ~~ CustomArrayAttribute::Inner, "and all the objects in the array are correct (i=$i)";
+            $i
+        }
+        is @checked.tail, $obj.inners.end, "and all array objects were checked";
+    }
+    
     is-deeply $obj.inners.map( *.name), <one two three>, "and they have their names set correctly";
 }
 
